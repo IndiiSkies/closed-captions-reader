@@ -22,6 +22,6 @@ with the decoding done, we can move on to the character reconition. using the Te
 
 ## TODO
 - currently running at 1fps and 400s of latency.
-- optimize the streaming pipline
+- optimize the streaming pipeline
 - tts should stop reading after new  to get rid of audio layering.
 - dynamically scale output resolution to match subtitle size.
