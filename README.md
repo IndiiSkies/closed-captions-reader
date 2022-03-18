@@ -4,7 +4,7 @@ uses Tesseract.js and ffmpeg to recognize subtitle text
 # Setup
 - npm install
 
-This uses a dependency
+This uses dependency(s)
 - ffmpeg
 - espeak
 
