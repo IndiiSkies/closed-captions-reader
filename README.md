@@ -26,3 +26,4 @@ using a node child process, we perform a system call to espeak passing in the oc
 - currently running at 1fps and 400s of latency.
 - optimize the streaming pipline
 - tts should stop reading after new  to get rid of audio layering.
+- dynamically scale output resolution to match subtitle size.
