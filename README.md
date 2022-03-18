@@ -1,7 +1,7 @@
 # closed-captions-reader
 uses Tesseract.js and ffmpeg to recognize subtitle text
 
-# setup
+# Setup
 - npm install
 
 This uses a dependency
