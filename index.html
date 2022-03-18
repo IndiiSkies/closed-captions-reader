@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Hello World!</title>
+    <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
+  </head>
+  <body>
+    <h1>OCR Output</h1>
+    <span>fps: #</span>
+    <div id="output"></div>
+
+    <div id="root">
+      <div id="sep"></div>
+      <div id="messages">
+      </div>
+
+      
+    <script type="module">
+      const { createWorker, createScheduler } = require('./tesseract.js@v2.0.0-beta.1.js');
+      const path = require('path');
+
+      const { spawn } = require("child_process");
+      const MjpegDecoder = require('mjpeg-decoder');
+      
+      const fs = require('fs');
+
+
+    // create a decoder which delivers a JPEG frame
+    // via the 'frame' event every 3 seconds.
+
+    const decoder = new MjpegDecoder(
+      'http://localhost:9000', { interval: 60000 }
+      );
+    
+    decoder.on('frame', (frame, seq) => {
+      fs.writeFileSync(`./mjpeg/static.jpg`, frame);
+      //imagData = 'data:image/png;base64,' + btoa(Buffer.from(frame).toString('base64'));
+
+
+
+     // document.getElementById("imgout").src = './mjpeg/static.jpg';
+      console.log(frame, seq);
+
+    });
+    
+    decoder.start();
+
+    const scheduler = createScheduler();
+    const video =  path.join(__dirname +'/mjpeg/static.jpg');
+    const messages = document.getElementById('messages');    
+    let timerId = null;
+////////
+const addMessage = (m, bold) => {
+  let msg = `<p>${m}</p>`;
+  if (bold) {
+    msg = `<p class="bold">${m}</p>`;
+  }
+  messages.innerHTML += msg;
+  messages.scrollTop = messages.scrollHeight;
+}
+
+const doOCR = async () => {
+  const c = document.createElement('canvas');
+  c.width = 640;
+  c.height = 360;
+ // c.getContext('2d').drawImage(video, 0, 0, 640, 360);
+  const start = new Date();
+  const { data: { text } } = await scheduler.addJob('recognize', video);
+  const end = new Date()
+  addMessage(`[${start.getMinutes()}:${start.getSeconds()} - ${end.getMinutes()}:${end.getSeconds()}], ${(end - start) / 1000} s`);
+  text.split('\n').forEach((line) => {
+    addMessage(line);
+  });
+};
+
+(async () => {
+  addMessage('Initializing Tesseract.js');
+  for (let i = 0; i < 4; i++) {
+    const worker = createWorker();
+    await worker.load();
+    await worker.loadLanguage('eng');
+    await worker.initialize('eng');
+    scheduler.addWorker(worker);
+  }
+  addMessage('Initialized Tesseract.js');
+ // video.addEventListener('play', () => {
+    timerId = setInterval(doOCR, 1000);
+ // });
+ // video.addEventListener('pause', () => {
+ //   clearInterval(timerId);
+ // });
+  addMessage('Now you can play the video. :)');
+//  video.controls = true;
+})();
+
+
+
+
+    //======================================================//
+      //spawn("./mjpeg-server", ["ffmpeg -d \ -loglevel none \-probesize 32 \-fpsprobesize 0 \-analyzed \-fflags nobuffer \-f x11grab \-r 8 \-video_size 1100x150 \ -i:0 \-f mpjpeg \-q 2 \-"]);
+/*
+      const worker = createWorker({
+        cachePath: path.join(__dirname, 'lang-data'),
+        logger: m => console.log(m),
+      });
+
+      (async () => {
+        await worker.load();
+        await worker.loadLanguage('eng');
+        await worker.initialize('eng');
+        //const { data: { text tmp} } = await worker.recognize(path.join(__dirname, 'images', 'tha.png'));
+        const { data: { text } } = await worker.recognize(path.join(__dirname +'/mjpeg/static.jpg'));
+        //fs.createReadStream(__dirname + '/octocat.png').pipe(stream);
+        console.log(text);
+        //spawn("espeak", [text]); //ok it's dependent on the await if the code. aync makes it so theres no skipping
+      //ls.stdout.on("data", data => {
+      //    console.log(`stdout: ${data}`);
+      //});
+      //ls.stderr.on("data", data => {
+      //    console.log(`stderr: ${data}`);'/home/jzheng/Desktop/Programming/tesseract.js-electron-mastertha.png'
+      //});
+      //ls.on('error', (error) => {
+      //    console.log(`error: ${error.message}`);
+      //});
+      //ls.on("close", code => {
+      //    console.log(`child process exited with code ${code}`);
+      //});
+      
+       // await worker.terminate();
+      })();*/
+
+
+    </script>
+<script>
+
+//TODO: interupts
+//TODO: image stream
+//TODO: AOT.
+//repeating... issue due to fps.
+//we need to make a comparison table to check for similar text. if( new ocr == old) {ignore}
+//fps limiter. no cuz that will induce lag not 3fps but like 10.
+// ocr ignore
+// ocr compare
+// oh gosh, this is way more complicated than i inticipated
+// give up?
+// maybe not
+
+</script>
+
+  </body>
+</html>

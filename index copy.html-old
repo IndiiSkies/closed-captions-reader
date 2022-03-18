@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Hello World!</title>
+    <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
+  </head>
+  <body>
+    <h1>OCR Output</h1>
+    <span>fps: #</span>
+    <div id="output"></div>
+    <script>
+      const { createWorker } = require('tesseract.js');
+      const path = require('path');
+
+      const { spawn } = require("child_process");
+
+      const fs = require('fs');
+
+      const history = new Array();
+
+      const worker = createWorker({
+        cachePath: path.join(__dirname, 'lang-data'),
+        logger: m => console.log(m),
+      });
+
+      (async () => {
+        await worker.load();
+        await worker.loadLanguage('eng');
+        await worker.initialize('eng');
+        //const { data: { text tmp} } = await worker.recognize(path.join(__dirname, 'images', 'tha.png'));
+        const { data: { text } } = await worker.recognize(fs.createReadStream(__dirname +'tha.png').pipe(stream));
+        //fs.createReadStream(__dirname + '/octocat.png').pipe(stream);
+        console.log(text);
+        spawn("espeak", [text]); //ok it's dependent on the await if the code. aync makes it so theres no skipping
+        
+      //ls.stdout.on("data", data => {
+      //    console.log(`stdout: ${data}`);
+      //});
+      //ls.stderr.on("data", data => {
+      //    console.log(`stderr: ${data}`);'/home/jzheng/Desktop/Programming/tesseract.js-electron-mastertha.png'
+      //});
+      //ls.on('error', (error) => {
+      //    console.log(`error: ${error.message}`);
+      //});
+      //ls.on("close", code => {
+      //    console.log(`child process exited with code ${code}`);
+      //});
+      
+        await worker.terminate();
+      })();
+
+
+
+    </script>
+<script>
+
+//TODO: interupts
+//TODO: image stream
+//TODO: AOT.
+//repeating... issue due to fps.
+//we need to make a comparison table to check for similar text. if( new ocr == old) {ignore}
+//fps limiter. no cuz that will induce lag not 3fps but like 10.
+// ocr ignore
+// ocr compare
+// oh gosh, this is way more complicated than i inticipated
+// give up?
+// maybe not
+
+</script>
+
+  </body>
+</html>

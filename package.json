@@ -1,0 +1,26 @@
+{
+  "name": "tesseract.js-electron",
+  "version": "0.1.0",
+  "description": "an example to use tesseract.js in electron",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:IndiiSkies/closed-captions-reader.git"
+  },
+  "author": "jonathanzheng135@gmail.com",
+  "license": "MIT",
+  "bugs": {
+  },
+  "homepage": "https://github.com/jeromewu/tesseract.js-electron#readme",
+  "devDependencies": {
+    "electron": "^7.1.7"
+  },
+  "dependencies": {
+    "mjpeg-decoder": "^1.0.3",
+    "tesseract.js": "^2.1.5",
+    "websocket-stream": "^5.5.2"
+  }
+}
