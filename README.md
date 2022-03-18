@@ -18,9 +18,7 @@ The command for that is:
 Next, in the client, we run a mjpeg decoder to save a image from https://localhost:9000, and then use fs to save the image.
 The image is now in ./mjpeg/static.jpg.
 
-with the decoding done, we can move on to the character reconition. using the Tesseract library we can load the image and it shows out the text.
-
-using a node child process, we perform a system call to espeak passing in the ocr text from Tesseract as the argument.
+with the decoding done, we can move on to the character reconition. using the Tesseract library we can load the image and it shows out the text. then, with child process, we perform a system call to espeak passing in the ocr text from Tesseract as the argument.
 
 ## TODO
 - currently running at 1fps and 400s of latency.
